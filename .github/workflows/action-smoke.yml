@@ -1,0 +1,22 @@
+name: Action Smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run local composite action
+        uses: ./
+        with:
+          config: examples/email-server/capagate.yaml
+          fail-on: critical
+          report-dir: reports
+      - name: Verify generated reports
+        shell: bash
+        run: |
+          test -f reports/summary.md
+          test -f reports/index.html

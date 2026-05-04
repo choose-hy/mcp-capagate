@@ -81,13 +81,17 @@ capagate wrap --policy capagate.policy.yaml -- npx your-mcp-server
 
 ## GitHub Action
 
+`v0.1.0` release tag 创建之后，外部用户可以这样使用发布后的 Action：
+
 ```yaml
-- uses: mcp-capagate/mcp-capagate@v0.1.0
+- uses: choose-hy/mcp-capagate@v0.1.0
   with:
     config: capagate.yaml
     fail-on: high
     report-dir: reports
 ```
+
+在本仓库内做本地开发或 smoke test 时，可以使用 `uses: ./`。
 
 Action 会安装依赖、构建项目、扫描 MCP 工具、生成 policy、生成 Markdown/HTML/SARIF 报告，并把 Markdown 报告写入 GitHub Step Summary。
 
