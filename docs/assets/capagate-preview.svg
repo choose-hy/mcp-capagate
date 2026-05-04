@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">MCP CapaGate preview</title>
+  <desc id="desc">MCP tools flow into a capability graph, policy compiler, runtime firewall, and audit report with sample decisions.</desc>
+  <rect width="1200" height="630" fill="#f7fbfb"/>
+  <rect x="44" y="42" width="1112" height="546" rx="22" fill="#ffffff" stroke="#c9d8d5" stroke-width="2"/>
+  <text x="80" y="98" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="38" font-weight="700" fill="#10201d">MCP CapaGate</text>
+  <text x="80" y="132" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" fill="#52635f">Capability-aware firewall and policy compiler for MCP tool calls</text>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <g transform="translate(78 198)">
+      <rect width="168" height="112" rx="12" fill="#e7f5f1" stroke="#87bbb0"/>
+      <text x="22" y="42" font-size="20" font-weight="700" fill="#123b34">MCP Tools</text>
+      <text x="22" y="72" font-size="14" fill="#42625c">schemas</text>
+      <text x="22" y="92" font-size="14" fill="#42625c">annotations</text>
+    </g>
+    <path d="M262 254H350" stroke="#4b8076" stroke-width="4" marker-end="url(#arrow)"/>
+    <g transform="translate(366 178)">
+      <rect width="190" height="152" rx="12" fill="#eef4ff" stroke="#91a7d9"/>
+      <text x="22" y="42" font-size="20" font-weight="700" fill="#1b315f">Capability Graph</text>
+      <text x="22" y="76" font-size="14" fill="#52627a">read_data</text>
+      <text x="22" y="98" font-size="14" fill="#52627a">financial_action</text>
+      <text x="22" y="120" font-size="14" fill="#52627a">external_network</text>
+    </g>
+    <path d="M572 254H660" stroke="#4b8076" stroke-width="4" marker-end="url(#arrow)"/>
+    <g transform="translate(676 178)">
+      <rect width="190" height="152" rx="12" fill="#fff7e8" stroke="#d4ad67"/>
+      <text x="22" y="42" font-size="20" font-weight="700" fill="#68450d">Policy Compiler</text>
+      <text x="22" y="76" font-size="14" fill="#755d34">least privilege</text>
+      <text x="22" y="98" font-size="14" fill="#755d34">priority rules</text>
+      <text x="22" y="120" font-size="14" fill="#755d34">fail closed</text>
+    </g>
+    <path d="M882 254H970" stroke="#4b8076" stroke-width="4" marker-end="url(#arrow)"/>
+    <g transform="translate(986 178)">
+      <rect width="132" height="152" rx="12" fill="#fdecec" stroke="#de8b8b"/>
+      <text x="18" y="42" font-size="20" font-weight="700" fill="#762121">Firewall</text>
+      <text x="18" y="76" font-size="14" fill="#7a4444">JSON-RPC</text>
+      <text x="18" y="98" font-size="14" fill="#7a4444">receipts</text>
+      <text x="18" y="120" font-size="14" fill="#7a4444">redaction</text>
+    </g>
+    <g transform="translate(80 390)">
+      <rect width="1040" height="126" rx="14" fill="#101828"/>
+      <text x="26" y="38" font-size="18" font-weight="700" fill="#f7faf9">Sample runtime decisions</text>
+      <text x="26" y="76" font-size="17" fill="#9ff2d0">read_order: ALLOW</text>
+      <text x="300" y="76" font-size="17" fill="#ffe08a">issue_refund: REQUIRE_APPROVAL</text>
+      <text x="670" y="76" font-size="17" fill="#ffb4a8">execute_shell: BLOCK</text>
+      <text x="26" y="106" font-size="17" fill="#ffb4a8">send_email after read_secret: BLOCK</text>
+    </g>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4b8076"/>
+    </marker>
+  </defs>
+</svg>

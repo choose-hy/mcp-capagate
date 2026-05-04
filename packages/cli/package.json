@@ -1,0 +1,40 @@
+{
+  "name": "@mcp-capagate/cli",
+  "version": "0.1.0",
+  "description": "Command line interface for MCP CapaGate.",
+  "author": "MCP CapaGate contributors",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "capagate": "dist/index.js"
+  },
+  "files": ["dist"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choose-hy/mcp-capagate.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "mcp",
+    "cli",
+    "policy",
+    "firewall",
+    "ai-agent-security"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json",
+    "typecheck": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+    "capagate": "cd ../.. && node packages/cli/dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@mcp-capagate/core": "workspace:*",
+    "commander": "^12.1.0",
+    "yaml": "^2.6.1"
+  }
+}

@@ -1,0 +1,40 @@
+[
+  {
+    "name": "list_inbox",
+    "description": "List recent inbox message metadata.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "limit": { "type": "integer", "minimum": 1, "maximum": 50 }
+      },
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "send_email",
+    "description": "Send an email to an external recipient.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "to": { "type": "string", "format": "email" },
+        "subject": { "type": "string" },
+        "body": { "type": "string" }
+      },
+      "required": ["to", "subject", "body"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "add_forwarding_rule",
+    "description": "Create a mailbox forwarding rule to send future messages to a destination email address.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "destination_email": { "type": "string", "format": "email" },
+        "enabled": { "type": "boolean" }
+      },
+      "required": ["destination_email", "enabled"],
+      "additionalProperties": false
+    }
+  }
+]

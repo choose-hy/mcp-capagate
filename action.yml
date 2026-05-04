@@ -1,0 +1,66 @@
+name: "MCP CapaGate"
+description: "Scan MCP tool definitions, compile least-privilege policy, and publish capability-aware security reports."
+author: "MCP CapaGate contributors"
+branding:
+  icon: "shield"
+  color: "green"
+inputs:
+  config:
+    description: "Path to capagate.yaml"
+    required: false
+    default: "capagate.yaml"
+  fail-on:
+    description: "Fail threshold: medium, high, or critical"
+    required: false
+    default: "high"
+  report-dir:
+    description: "Directory for scan and report artifacts"
+    required: false
+    default: "reports"
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+    - name: Enable pnpm
+      shell: bash
+      run: corepack enable
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+    - name: Build
+      shell: bash
+      run: pnpm build
+    - name: Scan MCP tools
+      shell: bash
+      run: pnpm --filter @mcp-capagate/cli capagate scan --config "${{ inputs.config }}" --out "${{ inputs.report-dir }}/scan.json"
+    - name: Compile policy
+      shell: bash
+      run: pnpm --filter @mcp-capagate/cli capagate policy --input "${{ inputs.report-dir }}/scan.json" --out capagate.policy.yaml
+    - name: Generate report
+      shell: bash
+      run: pnpm --filter @mcp-capagate/cli capagate report --scan "${{ inputs.report-dir }}/scan.json" --policy capagate.policy.yaml --html "${{ inputs.report-dir }}/index.html" --markdown "${{ inputs.report-dir }}/summary.md" --sarif "${{ inputs.report-dir }}/capagate.sarif"
+    - name: Write GitHub step summary
+      shell: bash
+      run: |
+        cat "${{ inputs.report-dir }}/summary.md" >> "$GITHUB_STEP_SUMMARY"
+    - name: Enforce risk threshold
+      shell: bash
+      run: |
+        node -e '
+          const fs = require("fs");
+          const scan = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+          const failOn = process.argv[2];
+          const rank = { medium: 2, high: 3, critical: 4 };
+          const counts = scan.summary.risk_counts || {};
+          const hit =
+            (rank[failOn] <= 2 && (counts.medium || 0) > 0) ||
+            (rank[failOn] <= 3 && (counts.high || 0) > 0) ||
+            (rank[failOn] <= 4 && (counts.critical || 0) > 0);
+          if (hit) {
+            console.error(`MCP CapaGate failed because findings reached ${failOn}.`);
+            process.exit(1);
+          }
+        ' "${{ inputs.report-dir }}/scan.json" "${{ inputs.fail-on }}"

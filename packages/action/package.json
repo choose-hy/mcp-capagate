@@ -1,0 +1,9 @@
+{
+  "name": "@mcp-capagate/action",
+  "version": "0.1.0",
+  "description": "Metadata package for the MCP CapaGate GitHub Action.",
+  "author": "MCP CapaGate contributors",
+  "license": "MIT",
+  "private": true,
+  "type": "module"
+}

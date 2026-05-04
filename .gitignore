@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+coverage/
+.vitest/
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# local runtime output
+.capagate/
+reports/
+capagate.policy.yaml
+*.log
+
+# environment
+.env
+.env.local
+.env.*
+.env.*.local
+!.env.example
+
+# package manager
+.pnpm-store/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

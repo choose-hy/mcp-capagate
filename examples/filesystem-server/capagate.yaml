@@ -1,0 +1,13 @@
+project:
+  name: "Filesystem MCP Server"
+  owner: "Developer Platform"
+inputs:
+  tools: "./tools.json"
+policy:
+  defaults:
+    unknown_tool: block
+    fail_closed: true
+runtime:
+  mode: enforce
+  audit_log: ".capagate/audit.jsonl"
+  redact_responses: true

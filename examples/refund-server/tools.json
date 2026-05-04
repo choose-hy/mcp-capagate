@@ -1,0 +1,67 @@
+[
+  {
+    "name": "read_order",
+    "description": "Read order status and line items by order id.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Order identifier."
+        }
+      },
+      "required": ["order_id"],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "status": { "type": "string" },
+        "total_cents": { "type": "integer" },
+        "currency": { "type": "string" }
+      }
+    }
+  },
+  {
+    "name": "issue_refund",
+    "description": "Issue a refund for an order after support confirmation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "amount_cents": { "type": "integer", "minimum": 1 },
+        "confirmation_id": { "type": "string" }
+      },
+      "required": ["order_id", "amount_cents"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "cancel_order",
+    "description": "Cancel or remove a pending order before fulfillment.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "reason": { "type": "string" }
+      },
+      "required": ["order_id", "reason"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "send_refund_email",
+    "description": "Send a refund status email to a customer.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "customer_email": { "type": "string", "format": "email" },
+        "order_id": { "type": "string" },
+        "message": { "type": "string" }
+      },
+      "required": ["customer_email", "order_id", "message"],
+      "additionalProperties": false
+    }
+  }
+]

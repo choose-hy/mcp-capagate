@@ -1,0 +1,44 @@
+{
+  "name": "mcp-capagate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Capability-aware firewall and policy compiler for MCP tool calls.",
+  "author": "MCP CapaGate contributors",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choose-hy/mcp-capagate.git"
+  },
+  "homepage": "https://github.com/choose-hy/mcp-capagate#readme",
+  "bugs": {
+    "url": "https://github.com/choose-hy/mcp-capagate/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agent-security",
+    "tool-calling",
+    "firewall",
+    "policy-compiler",
+    "capability-graph",
+    "supply-chain-security",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node ./node_modules/typescript/bin/tsc -b packages/core packages/cli",
+    "typecheck": "node ./node_modules/typescript/bin/tsc -b packages/core packages/cli && node ./node_modules/typescript/bin/tsc -p packages/core/tsconfig.json --noEmit && node ./node_modules/typescript/bin/tsc -p packages/cli/tsconfig.json --noEmit",
+    "test": "vitest run",
+    "demo": "node packages/cli/dist/index.js demo"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,9 @@
+project:
+  name: "Email MCP Server"
+  owner: "Collaboration Security"
+inputs:
+  tools: "./tools.json"
+runtime:
+  mode: shadow
+  audit_log: ".capagate/audit.jsonl"
+  redact_responses: true
