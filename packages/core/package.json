@@ -1,6 +1,6 @@
 {
   "name": "@mcp-capagate/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Core capability graph, policy compiler, scanners, proxy, and reporting engine for MCP CapaGate.",
   "author": "MCP CapaGate contributors",
   "license": "MIT",

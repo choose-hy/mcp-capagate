@@ -16,7 +16,7 @@ const program = new Command();
 program
   .name("capagate")
   .description("Capability-aware firewall and policy compiler for MCP tool calls.")
-  .version("0.1.0");
+  .version("0.2.0");
 
 registerInitCommand(program);
 registerBaselineCommand(program);

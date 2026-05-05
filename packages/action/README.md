@@ -3,7 +3,7 @@
 This package documents the repository-root composite action in `action.yml`.
 
 ```yaml
-- uses: choose-hy/mcp-capagate@v0.1.0
+      - uses: choose-hy/mcp-capagate@v0.2.0
   with:
     config: capagate.yaml
     fail-on: high
