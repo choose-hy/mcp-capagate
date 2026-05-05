@@ -1,0 +1,14 @@
+{
+  "scenario": "financial_action",
+  "description": "Financial workflows should be critical and require approval when constraints pass.",
+  "checks": [
+    {
+      "tool": "issue_refund",
+      "capabilities": ["financial_action"],
+      "risk_level": "critical",
+      "policy_decision": "require_approval",
+      "arguments": { "order_id": "ord_benchmark_001", "amount": 50, "confirmed": true }
+    }
+  ],
+  "scanner_findings": ["risky_capability"]
+}

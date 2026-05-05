@@ -1,0 +1,14 @@
+{
+  "scenario": "private_data_access",
+  "description": "Private customer data access should be high risk and require approval.",
+  "checks": [
+    {
+      "tool": "read_customer_profile",
+      "capabilities": ["read_data", "identity_access", "private_data_access"],
+      "risk_level": "high",
+      "policy_decision": "require_approval",
+      "arguments": { "customer_id": "cus_benchmark_001" }
+    }
+  ],
+  "scanner_findings": ["pii", "risky_capability"]
+}

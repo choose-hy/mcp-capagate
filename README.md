@@ -156,10 +156,21 @@ capagate policy --input reports/scan.json --out capagate.policy.yaml
 capagate baseline save --scan reports/scan.json --out .capagate/baseline.json
 capagate baseline verify --baseline .capagate/baseline.json --current reports/scan.json --fail-on high
 capagate diff --baseline .capagate/baseline.json --current reports/scan.json
+capagate benchmark --suite benchmarks/tool-risk-suite --out reports/benchmark.json --markdown reports/benchmark.md
 capagate report --scan reports/scan.json --policy capagate.policy.yaml --html reports/index.html --markdown reports/summary.md
 capagate wrap --policy capagate.policy.yaml -- npx your-mcp-server
 capagate demo
 ```
+
+## Benchmark
+
+MCP CapaGate includes an MCP Tool Risk Benchmark:
+
+```bash
+capagate benchmark --suite benchmarks/tool-risk-suite --out reports/benchmark.json --markdown reports/benchmark.md
+```
+
+It measures capability extraction, policy decisions, scanner findings, drift detection, and attack-chain detection across synthetic MCP tool-risk scenarios.
 
 ## GitHub Action
 
@@ -227,6 +238,7 @@ Reports include:
 - [Taint Tracking](docs/taint-tracking.md): session taint labels and external-sink attack-chain detection.
 - [MCP Discovery](docs/mcp-discovery.md): parse MCP client configs and optionally probe `tools/list`.
 - [Baseline CI](docs/baseline-ci.md): save graph baselines and fail pull requests on risky drift.
+- [Benchmark](docs/benchmark.md): MCP Tool Risk Benchmark scenarios, metrics, and limitations.
 
 ## Roadmap
 

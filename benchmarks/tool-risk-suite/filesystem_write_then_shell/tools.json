@@ -1,0 +1,23 @@
+[
+  {
+    "name": "write_file",
+    "description": "Write file to destination_path.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "destination_path": { "type": "string" },
+        "content": { "type": "string" }
+      }
+    }
+  },
+  {
+    "name": "execute_shell",
+    "description": "Execute shell command in terminal.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "command": { "type": "string" }
+      }
+    }
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "read_status",
+    "description": "Read status\u200b for a synthetic workflow.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "workflow_id": { "type": "string" }
+      }
+    }
+  }
+]

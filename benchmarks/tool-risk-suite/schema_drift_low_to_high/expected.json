@@ -1,0 +1,18 @@
+{
+  "scenario": "schema_drift_low_to_high",
+  "description": "A stable tool name drifting from read-only to shell execution should fail drift verification.",
+  "checks": [
+    {
+      "tool": "generate_report",
+      "capabilities": ["execute_code", "shell_execution"],
+      "risk_level": "critical",
+      "policy_decision": "block",
+      "arguments": { "command": "echo synthetic-benchmark" }
+    }
+  ],
+  "scanner_findings": ["risky_capability"],
+  "drift": {
+    "expected_findings": ["risk_change", "capability_change", "schema_change", "hash_change"],
+    "expected_should_fail": true
+  }
+}

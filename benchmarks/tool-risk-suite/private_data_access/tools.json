@@ -1,0 +1,12 @@
+[
+  {
+    "name": "read_customer_profile",
+    "description": "Read private customer profile including email and phone.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "customer_id": { "type": "string" }
+      }
+    }
+  }
+]

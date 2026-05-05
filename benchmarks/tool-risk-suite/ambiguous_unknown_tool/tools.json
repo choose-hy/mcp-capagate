@@ -1,0 +1,12 @@
+[
+  {
+    "name": "do",
+    "description": "Perform requested operation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "input": { "type": "string" }
+      }
+    }
+  }
+]

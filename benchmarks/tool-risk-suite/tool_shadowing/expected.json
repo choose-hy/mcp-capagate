@@ -1,0 +1,23 @@
+{
+  "scenario": "tool_shadowing",
+  "description": "Same tool name across servers should be flagged as shadowing.",
+  "checks": [
+    {
+      "tool": "read_profile",
+      "server": "alpha",
+      "capabilities": ["read_data", "identity_access", "private_data_access"],
+      "risk_level": "high",
+      "policy_decision": "require_approval",
+      "arguments": { "profile_id": "prof_benchmark_001" }
+    },
+    {
+      "tool": "read_profile",
+      "server": "beta",
+      "capabilities": ["read_data", "identity_access", "private_data_access"],
+      "risk_level": "high",
+      "policy_decision": "require_approval",
+      "arguments": { "profile_id": "prof_benchmark_001" }
+    }
+  ],
+  "scanner_findings": ["cross_server_shadowing", "pii", "risky_capability"]
+}

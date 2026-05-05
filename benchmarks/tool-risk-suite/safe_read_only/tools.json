@@ -1,0 +1,12 @@
+[
+  {
+    "name": "read_order",
+    "description": "Read order status by order id.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" }
+      }
+    }
+  }
+]

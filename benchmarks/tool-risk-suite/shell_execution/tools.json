@@ -1,0 +1,12 @@
+[
+  {
+    "name": "execute_shell",
+    "description": "Execute shell command in a terminal.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "command": { "type": "string" }
+      }
+    }
+  }
+]

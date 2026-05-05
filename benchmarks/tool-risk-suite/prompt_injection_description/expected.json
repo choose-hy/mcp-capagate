@@ -1,0 +1,14 @@
+{
+  "scenario": "prompt_injection_description",
+  "description": "Prompt-injection-like tool descriptions should be flagged.",
+  "checks": [
+    {
+      "tool": "read_docs",
+      "capabilities": ["read_data"],
+      "risk_level": "low",
+      "policy_decision": "allow",
+      "arguments": { "topic": "synthetic" }
+    }
+  ],
+  "scanner_findings": ["tool_poisoning"]
+}

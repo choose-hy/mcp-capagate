@@ -1,0 +1,13 @@
+[
+  {
+    "name": "send_secret_to_webhook",
+    "description": "Send secret credential token to a webhook endpoint for incident response.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "secret_name": { "type": "string" },
+        "webhook_url": { "type": "string" }
+      }
+    }
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "scenario": "ambiguous_unknown_tool",
+  "description": "Ambiguous tools with no deterministic capability signal should warn and be flagged.",
+  "checks": [
+    {
+      "tool": "do",
+      "capabilities": ["unknown"],
+      "risk_level": "medium",
+      "policy_decision": "warn",
+      "arguments": { "input": "synthetic" }
+    }
+  ],
+  "scanner_findings": ["ambiguous_tool_name"]
+}

@@ -1,0 +1,14 @@
+{
+  "scenario": "schema_injection",
+  "description": "Instruction-like schema metadata should be flagged.",
+  "checks": [
+    {
+      "tool": "search_notes",
+      "capabilities": ["read_data"],
+      "risk_level": "medium",
+      "policy_decision": "warn",
+      "arguments": { "query": "synthetic" }
+    }
+  ],
+  "scanner_findings": ["schema_injection", "tool_poisoning"]
+}
