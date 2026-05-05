@@ -1,6 +1,7 @@
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 export type DataSensitivity = "public" | "internal" | "private" | "secret";
 export type PolicyDecisionName = "allow" | "warn" | "require_approval" | "block";
+export type ConstraintStatus = "pass" | "fail";
 export type FindingSeverity = "info" | "low" | "medium" | "high" | "critical";
 
 export type Capability =
@@ -116,6 +117,36 @@ export interface CapabilityGraph {
   graph_hash: string;
 }
 
+export interface BlockedArgumentPattern {
+  path: string;
+  pattern: string;
+  reason: string;
+}
+
+export interface PolicyConstraints {
+  path_prefixes?: string[];
+  allowed_domains?: string[];
+  blocked_domains?: string[];
+  max_amount?: number;
+  required_boolean_flags?: string[];
+  blocked_argument_patterns?: BlockedArgumentPattern[];
+  required_argument_paths?: string[];
+  blocked_argument_paths?: string[];
+}
+
+export interface ConstraintFinding {
+  status: ConstraintStatus;
+  reason: string;
+  matched_constraint: keyof PolicyConstraints | "none";
+  argument_path?: string;
+  value_preview?: string;
+}
+
+export interface ConstraintEvaluation {
+  status: ConstraintStatus;
+  findings: ConstraintFinding[];
+}
+
 export interface PolicyRule {
   id: string;
   match: {
@@ -127,6 +158,7 @@ export interface PolicyRule {
   };
   decision: PolicyDecisionName;
   reason: string;
+  constraints?: PolicyConstraints;
   controls: string[];
   priority: number;
 }
@@ -150,6 +182,7 @@ export interface PolicyDecision {
   required_controls: string[];
   redact_response: boolean;
   receipt?: AuditReceipt;
+  constraint_findings?: ConstraintFinding[];
 }
 
 export interface ToolCallContext {

@@ -7,6 +7,7 @@ export * from "./capability/riskScorer.js";
 export * from "./policy/compiler.js";
 export * from "./policy/defaultPolicies.js";
 export * from "./policy/evaluator.js";
+export * from "./policy/constraints.js";
 export * from "./proxy/jsonRpc.js";
 export * from "./proxy/mcpMessages.js";
 export * from "./proxy/stdioProxy.js";

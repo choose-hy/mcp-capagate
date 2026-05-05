@@ -31,6 +31,18 @@ capagate policy --input reports/agent-workspace-scan.json --out reports/agent-wo
 capagate report --scan reports/agent-workspace-scan.json --policy reports/agent-workspace-policy.yaml --html reports/agent-workspace.html --markdown reports/agent-workspace.md
 ```
 
+
+## Constraint Policy Example
+
+`policy-constraints.yaml` is an illustrative policy-as-code file for this scenario. It shows how to:
+
+- allow `read_file` only under `./docs/`
+- require `confirmed=true` for `issue_refund`
+- block `issue_refund` when the amount is greater than `100`
+- allow `send_email` only to `company.com`
+- block webhook posts unless a destination host is explicitly allowlisted
+
+The file is meant for review and adaptation. It is not generated output and it does not contain real secrets or live endpoints.
 ## Expected Decisions
 
 Typical deterministic policy output should treat the tools roughly as follows:

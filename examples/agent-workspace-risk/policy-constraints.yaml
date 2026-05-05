@@ -1,0 +1,77 @@
+version: "0.1"
+generated_at: "2026-01-01T00:00:00.000Z"
+defaults:
+  unknown_tool: block
+  fail_closed: true
+  redact_response: true
+rules:
+  - id: example.read_file.docs_only
+    match:
+      tool: read_file
+    decision: allow
+    reason: "Allow read_file only under the committed docs directory."
+    constraints:
+      path_prefixes:
+        - "./docs/"
+        - "docs/"
+      required_argument_paths:
+        - path
+    controls:
+      - path_allowlist
+      - constraint_review
+    priority: 1000
+
+  - id: example.issue_refund.confirmed_small_amount
+    match:
+      tool: issue_refund
+    decision: require_approval
+    reason: "Refunds require explicit confirmation and a small amount limit."
+    constraints:
+      max_amount: 100
+      required_boolean_flags:
+        - confirmed
+    controls:
+      - business_confirmation
+      - constraint_review
+      - human_approval
+    priority: 900
+
+  - id: example.send_email.company_only
+    match:
+      tool: send_email
+    decision: allow
+    reason: "Allow email only to company-controlled recipients in this example policy."
+    constraints:
+      allowed_domains:
+        - company.com
+      required_argument_paths:
+        - to
+    controls:
+      - destination_allowlist
+      - constraint_review
+    priority: 850
+
+  - id: example.post_webhook.block_unknown_hosts
+    match:
+      tool: post_webhook
+    decision: require_approval
+    reason: "Webhook posts must be constrained to reviewed destinations."
+    constraints:
+      allowed_domains: []
+      required_argument_paths:
+        - webhook_url
+    controls:
+      - destination_allowlist
+      - constraint_review
+    priority: 800
+
+  - id: example.execute_shell.block
+    match:
+      tool: execute_shell
+    decision: block
+    reason: "Shell execution is blocked by default."
+    controls:
+      - block_by_default
+      - explicit_operator_approval
+    priority: 1200
+policy_hash: illustrative-policy-not-for-production

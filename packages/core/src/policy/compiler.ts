@@ -1,4 +1,4 @@
-import type { Capability, CapabilityGraph, PolicyDecisionName, PolicyDocument, PolicyRule } from "../types.js";
+import type { Capability, CapabilityGraph, PolicyConstraints, PolicyDecisionName, PolicyDocument, PolicyRule } from "../types.js";
 import { policyHashPayload, sha256 } from "../schema.js";
 import { DEFAULT_POLICY_CONFIG } from "./defaultPolicies.js";
 
@@ -11,6 +11,7 @@ export interface CompilePolicyOptions {
 export function compilePolicy(graph: CapabilityGraph, options: CompilePolicyOptions = {}): PolicyDocument {
   const rules = graph.nodes.map((node, index): PolicyRule => {
     const decision = decisionForCapabilities(node.capabilities, node.risk_level);
+    const constraints = constraintsForCapabilities(node.capabilities);
     return {
       id: `tool.${node.server ?? "local"}.${node.tool}`.replace(/[^a-zA-Z0-9_.-]/g, "_"),
       match: {
@@ -22,7 +23,8 @@ export function compilePolicy(graph: CapabilityGraph, options: CompilePolicyOpti
       },
       decision,
       reason: reasonForDecision(decision, node.capabilities),
-      controls: node.required_controls,
+      constraints,
+      controls: [...new Set([...node.required_controls, ...controlsForConstraints(constraints)])].sort(),
       priority: priorityForDecision(decision) + (100 - index)
     };
   });
@@ -73,6 +75,44 @@ export function decisionForCapabilities(capabilities: Capability[], riskLevel: s
   }
 
   return "allow";
+}
+
+export function constraintsForCapabilities(capabilities: Capability[]): PolicyConstraints | undefined {
+  const set = new Set(capabilities);
+  const constraints: PolicyConstraints = {};
+
+  if (set.has("filesystem_read")) {
+    constraints.path_prefixes = ["./", "docs/", "examples/"];
+  }
+
+  if (set.has("financial_action")) {
+    constraints.max_amount = 100;
+    constraints.required_boolean_flags = ["confirmed"];
+  }
+
+  if (set.has("webhook_post")) {
+    constraints.allowed_domains = [];
+  }
+
+  return Object.keys(constraints).length > 0 ? constraints : undefined;
+}
+
+function controlsForConstraints(constraints: PolicyConstraints | undefined): string[] {
+  if (!constraints) {
+    return [];
+  }
+
+  const controls = new Set<string>(["constraint_review"]);
+  if (constraints.path_prefixes) {
+    controls.add("path_allowlist");
+  }
+  if (constraints.allowed_domains || constraints.blocked_domains) {
+    controls.add("destination_allowlist");
+  }
+  if (constraints.max_amount !== undefined || constraints.required_boolean_flags) {
+    controls.add("business_confirmation");
+  }
+  return [...controls].sort();
 }
 
 function priorityForDecision(decision: PolicyDecisionName): number {
