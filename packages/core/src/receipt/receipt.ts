@@ -1,6 +1,6 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
-import type { AuditReceipt, PolicyDecisionName } from "../types.js";
+import type { AuditReceipt, PolicyDecisionName, RuntimeMode, ScanFinding, TaintLabel } from "../types.js";
 import { sha256 } from "../schema.js";
 
 export interface CreateReceiptInput {
@@ -14,6 +14,10 @@ export interface CreateReceiptInput {
   policy_hash: string;
   session_id: string;
   previous_receipt_hash?: string;
+  runtime_mode?: RuntimeMode;
+  would_have_decision?: PolicyDecisionName;
+  taint_labels?: TaintLabel[];
+  attack_chain_findings?: ScanFinding[];
 }
 
 export function createAuditReceipt(input: CreateReceiptInput): AuditReceipt {
@@ -30,7 +34,11 @@ export function createAuditReceipt(input: CreateReceiptInput): AuditReceipt {
     arguments_hash,
     policy_hash: input.policy_hash,
     session_id: input.session_id,
-    previous_receipt_hash: input.previous_receipt_hash
+    previous_receipt_hash: input.previous_receipt_hash,
+    runtime_mode: input.runtime_mode,
+    would_have_decision: input.would_have_decision,
+    taint_labels: input.taint_labels,
+    attack_chain_findings: input.attack_chain_findings
   };
   const id = sha256(unsigned).slice(0, 24);
   const receiptWithoutHash = { ...unsigned, id };

@@ -1,6 +1,8 @@
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 export type DataSensitivity = "public" | "internal" | "private" | "secret";
 export type PolicyDecisionName = "allow" | "warn" | "require_approval" | "block";
+export type RuntimeMode = "enforce" | "shadow" | "audit-only";
+export type TaintLabel = "secret_read" | "private_data_read" | "credential_access" | "filesystem_sensitive_read" | "customer_data_read";
 export type ConstraintStatus = "pass" | "fail";
 export type FindingSeverity = "info" | "low" | "medium" | "high" | "critical";
 
@@ -175,6 +177,14 @@ export interface PolicyDocument {
   policy_hash: string;
 }
 
+export interface RuntimeTaintSource {
+  label: TaintLabel;
+  source_tool: string;
+  source_argument_paths: string[];
+  timestamp: string;
+  receipt_hash?: string;
+}
+
 export interface PolicyDecision {
   decision: PolicyDecisionName;
   reason: string;
@@ -183,6 +193,10 @@ export interface PolicyDecision {
   redact_response: boolean;
   receipt?: AuditReceipt;
   constraint_findings?: ConstraintFinding[];
+  runtime_mode?: RuntimeMode;
+  would_have_decision?: PolicyDecisionName;
+  taint_labels?: TaintLabel[];
+  attack_chain_findings?: ScanFinding[];
 }
 
 export interface ToolCallContext {
@@ -206,6 +220,10 @@ export interface AuditReceipt {
   policy_hash: string;
   session_id: string;
   previous_receipt_hash?: string;
+  runtime_mode?: RuntimeMode;
+  would_have_decision?: PolicyDecisionName;
+  taint_labels?: TaintLabel[];
+  attack_chain_findings?: ScanFinding[];
   receipt_hash: string;
 }
 

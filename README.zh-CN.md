@@ -150,6 +150,8 @@ jobs:
 - [Limitations](docs/limitations.md)：部署边界、安全假设和 MVP 已知限制。
 - [Comparison](docs/comparison.md)：CapaGate 与 scanner、通用 guardrail、observability 和 OS sandbox 的区别。
 - [Policy DSL](docs/policy-dsl.md)：用于路径、域名、金额、确认标记和参数模式的工具调用约束。
+- [Runtime Modes](docs/runtime-modes.md)：运行时代理的 enforce、shadow 和 audit-only 模式。
+- [Taint Tracking](docs/taint-tracking.md)：会话 taint 标签和外部 sink 攻击链检测。
 
 ## 如何在面试或项目介绍里讲
 
