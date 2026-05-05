@@ -29,23 +29,38 @@ runs:
       run: corepack enable
     - name: Install dependencies
       shell: bash
-      run: pnpm install --frozen-lockfile
+      run: pnpm --dir "$GITHUB_ACTION_PATH" install --frozen-lockfile
     - name: Build
       shell: bash
-      run: pnpm build
+      run: pnpm --dir "$GITHUB_ACTION_PATH" build
+    - name: Prepare report directory
+      shell: bash
+      run: mkdir -p "$GITHUB_WORKSPACE/${{ inputs.report-dir }}"
     - name: Scan MCP tools
       shell: bash
-      run: pnpm --filter @mcp-capagate/cli capagate scan --config "${{ inputs.config }}" --out "${{ inputs.report-dir }}/scan.json"
+      run: |
+        node "$GITHUB_ACTION_PATH/packages/cli/dist/index.js" scan \
+          --config "$GITHUB_WORKSPACE/${{ inputs.config }}" \
+          --out "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/scan.json"
     - name: Compile policy
       shell: bash
-      run: pnpm --filter @mcp-capagate/cli capagate policy --input "${{ inputs.report-dir }}/scan.json" --out capagate.policy.yaml
+      run: |
+        node "$GITHUB_ACTION_PATH/packages/cli/dist/index.js" policy \
+          --input "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/scan.json" \
+          --out "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/capagate.policy.yaml"
     - name: Generate report
       shell: bash
-      run: pnpm --filter @mcp-capagate/cli capagate report --scan "${{ inputs.report-dir }}/scan.json" --policy capagate.policy.yaml --html "${{ inputs.report-dir }}/index.html" --markdown "${{ inputs.report-dir }}/summary.md" --sarif "${{ inputs.report-dir }}/capagate.sarif"
+      run: |
+        node "$GITHUB_ACTION_PATH/packages/cli/dist/index.js" report \
+          --scan "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/scan.json" \
+          --policy "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/capagate.policy.yaml" \
+          --html "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/index.html" \
+          --markdown "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/summary.md" \
+          --sarif "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/capagate.sarif"
     - name: Write GitHub step summary
       shell: bash
       run: |
-        cat "${{ inputs.report-dir }}/summary.md" >> "$GITHUB_STEP_SUMMARY"
+        cat "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/summary.md" >> "$GITHUB_STEP_SUMMARY"
     - name: Enforce risk threshold
       shell: bash
       run: |
@@ -63,4 +78,4 @@ runs:
             console.error(`MCP CapaGate failed because findings reached ${failOn}.`);
             process.exit(1);
           }
-        ' "${{ inputs.report-dir }}/scan.json" "${{ inputs.fail-on }}"
+        ' "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/scan.json" "${{ inputs.fail-on }}"

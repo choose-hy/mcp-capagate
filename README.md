@@ -139,6 +139,8 @@ capagate demo
 
 ## GitHub Action
 
+After the `v0.1.0` release tag exists, external users can run the published action:
+
 ```yaml
 - uses: choose-hy/mcp-capagate@v0.1.0
   with:
@@ -146,6 +148,8 @@ capagate demo
     fail-on: high
     report-dir: reports
 ```
+
+For local development inside this repository, use `uses: ./`.
 
 The action installs dependencies, builds the workspace, runs scan/policy/report, writes the Markdown report to the GitHub step summary, and fails on the configured threshold.
 
