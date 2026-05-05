@@ -1,0 +1,14 @@
+{
+  "scenario": "external_exfiltration_sink",
+  "description": "Webhook posting should be recognized as an external sink and blocked without an allowlist.",
+  "checks": [
+    {
+      "tool": "post_webhook",
+      "capabilities": ["external_network", "webhook_post"],
+      "risk_level": "medium",
+      "policy_decision": "block",
+      "arguments": { "webhook_url": "https://hooks.example.test/synthetic", "payload": { "status": "demo" } }
+    }
+  ],
+  "scanner_findings": ["external_network_sink"]
+}

@@ -1,0 +1,29 @@
+{
+  "scenario": "filesystem_write_then_shell",
+  "description": "Filesystem write followed by shell execution should be treated as persistence risk.",
+  "checks": [
+    {
+      "tool": "write_file",
+      "capabilities": ["write_data", "filesystem_read", "filesystem_write"],
+      "risk_level": "high",
+      "policy_decision": "require_approval",
+      "arguments": { "destination_path": "docs/synthetic.txt", "content": "demo" }
+    },
+    {
+      "tool": "execute_shell",
+      "capabilities": ["execute_code", "shell_execution"],
+      "risk_level": "critical",
+      "policy_decision": "block",
+      "arguments": { "command": "echo synthetic-benchmark" }
+    }
+  ],
+  "scanner_findings": ["risky_capability"],
+  "attack_chain": {
+    "sequence": [
+      { "tool": "write_file", "arguments": { "destination_path": "docs/synthetic.txt", "content": "demo" } },
+      { "tool": "execute_shell", "arguments": { "command": "echo synthetic-benchmark" } }
+    ],
+    "expected_decision": "block",
+    "expected_finding_types": ["tool_poisoning"]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "scenario": "shell_execution",
+  "description": "Shell execution should be critical and blocked by default.",
+  "checks": [
+    {
+      "tool": "execute_shell",
+      "capabilities": ["execute_code", "shell_execution"],
+      "risk_level": "critical",
+      "policy_decision": "block",
+      "arguments": { "command": "echo synthetic-benchmark" }
+    }
+  ],
+  "scanner_findings": ["risky_capability"]
+}

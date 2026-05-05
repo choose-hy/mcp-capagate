@@ -1,0 +1,13 @@
+[
+  {
+    "name": "post_webhook",
+    "description": "Post event payload to a webhook url.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "webhook_url": { "type": "string" },
+        "payload": { "type": "object" }
+      }
+    }
+  }
+]

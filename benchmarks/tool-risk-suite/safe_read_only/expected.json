@@ -1,0 +1,14 @@
+{
+  "scenario": "safe_read_only",
+  "description": "A simple read-only business lookup should be low risk and allowed.",
+  "checks": [
+    {
+      "tool": "read_order",
+      "capabilities": ["read_data"],
+      "risk_level": "low",
+      "policy_decision": "allow",
+      "arguments": { "order_id": "ord_benchmark_001" }
+    }
+  ],
+  "scanner_findings": []
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "read_file",
+    "description": "Read file by path.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" }
+      }
+    }
+  },
+  {
+    "name": "send_email",
+    "description": "Send email message to an external recipient.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "to": { "type": "string" },
+        "body": { "type": "string" }
+      }
+    }
+  }
+]

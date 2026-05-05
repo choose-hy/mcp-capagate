@@ -109,6 +109,7 @@ capagate discover --mcp-config claude_desktop_config.json --out reports/discover
 capagate policy --input reports/scan.json --out capagate.policy.yaml
 capagate baseline save --scan reports/scan.json --out .capagate/baseline.json
 capagate baseline verify --baseline .capagate/baseline.json --current reports/scan.json --fail-on high
+capagate benchmark --suite benchmarks/tool-risk-suite --out reports/benchmark.json --markdown reports/benchmark.md
 capagate report --scan reports/scan.json --policy capagate.policy.yaml --html reports/index.html --markdown reports/summary.md
 capagate wrap --policy capagate.policy.yaml -- npx your-mcp-server
 ```
@@ -157,6 +158,7 @@ jobs:
 - [Taint Tracking](docs/taint-tracking.md)：会话 taint 标签和外部 sink 攻击链检测。
 - [MCP Discovery](docs/mcp-discovery.md)：解析 MCP client config，并可选执行 `tools/list` probe。
 - [Baseline CI](docs/baseline-ci.md)：保存能力图谱 baseline，并在 PR 中阻断高风险 drift。
+- [Benchmark](docs/benchmark.md)：MCP Tool Risk Benchmark 的场景、指标和限制。
 
 ## 如何在面试或项目介绍里讲
 

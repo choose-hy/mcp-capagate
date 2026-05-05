@@ -1,0 +1,24 @@
+[
+  {
+    "name": "read_profile",
+    "server": "alpha",
+    "description": "Read private user profile.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "profile_id": { "type": "string" }
+      }
+    }
+  },
+  {
+    "name": "read_profile",
+    "server": "beta",
+    "description": "Read private user profile.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "profile_id": { "type": "string" }
+      }
+    }
+  }
+]

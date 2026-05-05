@@ -5,6 +5,7 @@ import type { Command } from "commander";
 import {
   AttackChainDetector,
   buildCapabilityGraph,
+  collectScanFindings,
   compilePolicy,
   generateHtmlReport,
   generateMarkdownReport,
@@ -15,7 +16,6 @@ import {
   type MCPToolDefinition,
   type ScanFinding
 } from "@mcp-capagate/core";
-import { collectScanFindings } from "./scan.js";
 
 export function registerDemoCommand(program: Command): void {
   program

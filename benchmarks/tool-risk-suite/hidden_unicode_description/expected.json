@@ -1,0 +1,14 @@
+{
+  "scenario": "hidden_unicode_description",
+  "description": "Hidden Unicode in tool metadata should be flagged.",
+  "checks": [
+    {
+      "tool": "read_status",
+      "capabilities": ["read_data"],
+      "risk_level": "low",
+      "policy_decision": "allow",
+      "arguments": { "workflow_id": "wf_benchmark_001" }
+    }
+  ],
+  "scanner_findings": ["hidden_unicode"]
+}
