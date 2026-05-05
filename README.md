@@ -174,7 +174,7 @@ It measures capability extraction, policy decisions, scanner findings, drift det
 
 ## GitHub Action
 
-External users should use the published action, for example `choose-hy/mcp-capagate@v0.1.0`:
+External users should use the published action, for example `choose-hy/mcp-capagate@v0.2.0`:
 
 ```yaml
 name: MCP CapaGate
@@ -188,7 +188,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: choose-hy/mcp-capagate@v0.1.0
+      - uses: choose-hy/mcp-capagate@v0.2.0
         with:
           config: capagate.yaml
           fail-on: high

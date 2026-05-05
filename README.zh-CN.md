@@ -118,7 +118,7 @@ capagate wrap --policy capagate.policy.yaml -- npx your-mcp-server
 
 ## GitHub Action
 
-外部用户应该使用发布后的 Action，例如 `choose-hy/mcp-capagate@v0.1.0`：
+外部用户应该使用发布后的 Action，例如 `choose-hy/mcp-capagate@v0.2.0`：
 
 ```yaml
 name: MCP CapaGate
@@ -132,7 +132,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: choose-hy/mcp-capagate@v0.1.0
+      - uses: choose-hy/mcp-capagate@v0.2.0
         with:
           config: capagate.yaml
           fail-on: high
