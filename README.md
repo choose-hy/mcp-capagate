@@ -12,25 +12,54 @@ Capability-aware firewall and policy compiler for MCP tool calls.
 
 ![MCP CapaGate preview](docs/assets/capagate-preview.svg)
 
-MCP CapaGate turns MCP tool definitions into a capability graph, compiles least-privilege policies, and blocks risky tool calls before they execute.
+Stop unsafe MCP tool calls before they execute.
 
-This is not another MCP scanner. It is not another chatbot framework. MCP CapaGate is a local-first, deterministic, capability-aware firewall and policy compiler for AI agent tools.
+MCP CapaGate turns MCP tool schemas into a Capability Graph, compiles least-privilege policy, and enforces `ALLOW` / `WARN` / `REQUIRE_APPROVAL` / `BLOCK` decisions through a deterministic runtime proxy.
+
+```text
+read_order: ALLOW
+issue_refund: REQUIRE_APPROVAL or BLOCK
+execute_shell: BLOCK
+read_secret + send_email: BLOCK
+```
+
+`Tool Schema -> Capability Extraction -> Capability Graph -> Policy Compiler -> Runtime Firewall -> Audit Receipts + Reports`
+
+This is not another MCP scanner. It is not another chatbot framework. It runs locally and does not require training data, fine-tuning, proprietary data, a database, telemetry, or an LLM API key.
 
 Research-style framing:
 
 > We propose a capability-aware policy compiler for MCP tools that maps tool schemas to a risk graph, synthesizes least-privilege policies, and enforces them at runtime through a deterministic MCP proxy.
 
-No training data required. No fine-tuning required. No proprietary data. No database. No telemetry. No LLM API key.
+## The Problem
 
-## Why This Exists
+MCP gives agents tools such as `read_file`, `send_email`, `issue_refund`, `execute_shell`, and `query_database`. Once an LLM can call tools, prompt injection is no longer only a text risk; it can become execution risk.
 
-MCP tools give agents power: read files, query databases, send messages, issue refunds, post webhooks, and sometimes execute commands. A normal scanner can list suspicious words. That is useful, but incomplete.
+Safe-looking tools can also combine into dangerous attack chains: read a customer profile, summarize it, then send it to an external inbox; write a file, then execute a shell command; add a forwarding rule, then quietly exfiltrate future messages.
+
+## What CapaGate Does
 
 MCP CapaGate asks a stronger question:
 
 > What can this tool do, what can it be chained with, and what policy should exist before an agent calls it?
 
 It converts tool schemas into a Capability Graph, detects drift and attack chains, compiles least-privilege policy, and enforces decisions through a transparent JSON-RPC stdio proxy.
+
+## Without / With CapaGate
+
+Without CapaGate:
+
+- tool risk is implicit
+- schema drift may go unnoticed
+- safe tools can chain into exfiltration
+- risky calls may execute before review
+
+With CapaGate:
+
+- tools become capability nodes
+- risky tools get explicit policy
+- dangerous calls are blocked before execution
+- every decision has an audit receipt
 
 ## 30-Second Demo
 
@@ -48,14 +77,6 @@ The demo generates:
 - `reports/index.html`
 - `.capagate/audit.jsonl`
 
-Example decision output:
-
-```text
-read_order: ALLOW
-issue_refund: BLOCK - Approval required but not granted
-execute_shell: BLOCK
-send_email: BLOCK - sensitive read followed by external send
-```
 
 ## Security Decisions
 
@@ -139,19 +160,36 @@ capagate demo
 
 ## GitHub Action
 
-After the `v0.1.0` release tag exists, external users can run the published action:
+External users should use the published action, for example `choose-hy/mcp-capagate@v0.1.0`:
 
 ```yaml
-- uses: choose-hy/mcp-capagate@v0.1.0
-  with:
-    config: capagate.yaml
-    fail-on: high
-    report-dir: reports
+name: MCP CapaGate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  mcp-capagate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: choose-hy/mcp-capagate@v0.1.0
+        with:
+          config: capagate.yaml
+          fail-on: high
+          report-dir: reports
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mcp-capagate-report
+          path: reports/
 ```
 
-For local development inside this repository, use `uses: ./`.
-
-The action installs dependencies, builds the workspace, runs scan/policy/report, writes the Markdown report to the GitHub step summary, and fails on the configured threshold.
+- `fail-on: high` fails the workflow when high or critical findings are detected.
+- `report-dir` controls where scan JSON, Markdown, HTML, and SARIF reports are written.
+- The Markdown report is also written to the GitHub step summary.
+- For local development inside this repository, use `uses: ./`.
 
 ## Examples
 
@@ -175,6 +213,11 @@ Reports include:
 - recommended fixes
 - product-facing summary
 - developer-facing remediation
+
+## Further Reading
+
+- [Limitations](docs/limitations.md): deployment boundaries, safety assumptions, and known MVP limits.
+- [Comparison](docs/comparison.md): how CapaGate differs from scanners, guardrails, observability, and sandboxing.
 
 ## Roadmap
 

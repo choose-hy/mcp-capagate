@@ -6,13 +6,26 @@
 
 ![MCP CapaGate preview](docs/assets/capagate-preview.svg)
 
-MCP CapaGate 会把 MCP 工具定义转换成能力图谱，编译最小权限策略，并在工具真正执行之前通过透明代理拦截高风险调用。
+在工具真正执行前阻断高风险 MCP 调用。
 
-它不是普通 scanner，也不是新的聊天机器人框架。它的核心是：用确定性的方式理解工具能力、工具组合风险、策略决策和运行时审计。
+MCP CapaGate 会把 MCP 工具 schema 转换成能力图谱，编译最小权限策略，并通过确定性的运行时代理执行 `ALLOW` / `WARN` / `REQUIRE_APPROVAL` / `BLOCK` 决策。
+
+```text
+read_order: ALLOW
+issue_refund: REQUIRE_APPROVAL or BLOCK
+execute_shell: BLOCK
+read_secret + send_email: BLOCK
+```
+
+`Tool Schema -> Capability Extraction -> Capability Graph -> Policy Compiler -> Runtime Firewall -> Audit Receipts + Reports`
+
+它不是普通 scanner，也不是新的聊天机器人框架。它可以完全本地运行，不需要训练数据、微调、专有数据、数据库、遥测或 LLM API key。
 
 ## MCP 工具调用的风险
 
-MCP 工具让 Agent 能够读文件、查数据库、发邮件、退款、调用 webhook，甚至执行 shell 命令。问题不只是“工具描述里有没有可疑词”，而是：
+MCP 工具让 Agent 能够读文件、查数据库、发邮件、退款、调用 webhook，甚至执行 shell 命令。一旦 LLM 可以调用工具，prompt injection 就不再只是文本风险，而可能变成执行风险。
+
+问题不只是“工具描述里有没有可疑词”，而是：
 
 - 这个工具实际具备什么能力？
 - 它能不能读取隐私数据？
@@ -20,7 +33,27 @@ MCP 工具让 Agent 能够读文件、查数据库、发邮件、退款、调用
 - 它和其他工具组合后会不会形成攻击链？
 - 工具 schema 更新后，风险有没有漂移？
 
-MCP CapaGate 用能力图谱回答这些问题。
+看起来安全的工具也可能组合成危险路径：先读取客户资料，再发送邮件；先写文件，再执行 shell；先添加转发规则，再持续外发数据。
+
+## CapaGate 做什么
+
+`Tool Schema -> Capability Extraction -> Capability Graph -> Policy Compiler -> Runtime Firewall -> Audit Receipts + Reports`
+
+MCP CapaGate 用能力图谱回答这些问题：把每个工具映射成能力节点，合成最小权限策略，在运行时防火墙里阻断高风险调用，并为每次决策生成审计 receipt。
+
+没有 CapaGate：
+
+- 工具风险是隐含的
+- schema 漂移可能不被发现
+- 安全工具可能串成外泄链路
+- 高风险调用可能先执行、后审查
+
+有 CapaGate：
+
+- 工具变成明确的能力节点
+- 高风险能力有显式 policy
+- 危险调用在执行前被阻断
+- 每次决策都有审计 receipt
 
 ## 为什么需要能力图谱
 
@@ -81,19 +114,41 @@ capagate wrap --policy capagate.policy.yaml -- npx your-mcp-server
 
 ## GitHub Action
 
-`v0.1.0` release tag 创建之后，外部用户可以这样使用发布后的 Action：
+外部用户应该使用发布后的 Action，例如 `choose-hy/mcp-capagate@v0.1.0`：
 
 ```yaml
-- uses: choose-hy/mcp-capagate@v0.1.0
-  with:
-    config: capagate.yaml
-    fail-on: high
-    report-dir: reports
+name: MCP CapaGate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  mcp-capagate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: choose-hy/mcp-capagate@v0.1.0
+        with:
+          config: capagate.yaml
+          fail-on: high
+          report-dir: reports
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mcp-capagate-report
+          path: reports/
 ```
 
-在本仓库内做本地开发或 smoke test 时，可以使用 `uses: ./`。
+- `fail-on: high` 表示发现 high 或 critical 风险时让 workflow 失败。
+- `report-dir` 表示报告输出目录，会包含 scan JSON、Markdown、HTML 和 SARIF 报告。
+- Markdown 报告也会写入 GitHub Step Summary。
+- 在本仓库内做本地开发或 smoke test 时，可以使用 `uses: ./`。
 
-Action 会安装依赖、构建项目、扫描 MCP 工具、生成 policy、生成 Markdown/HTML/SARIF 报告，并把 Markdown 报告写入 GitHub Step Summary。
+## 更多文档
+
+- [Limitations](docs/limitations.md)：部署边界、安全假设和 MVP 已知限制。
+- [Comparison](docs/comparison.md)：CapaGate 与 scanner、通用 guardrail、observability 和 OS sandbox 的区别。
 
 ## 如何在面试或项目介绍里讲
 

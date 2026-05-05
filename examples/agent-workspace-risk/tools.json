@@ -1,0 +1,151 @@
+[
+  {
+    "name": "read_file",
+    "description": "Read a file from the agent workspace by path for support investigation.",
+    "server": "workspace-filesystem",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Workspace-relative file path to read."
+        }
+      },
+      "required": ["path"],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      }
+    }
+  },
+  {
+    "name": "write_file",
+    "description": "Write or overwrite a file in the agent workspace for generated drafts.",
+    "server": "workspace-filesystem",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["path", "content"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "delete_file",
+    "description": "Delete a file from the agent workspace after operator confirmation.",
+    "server": "workspace-filesystem",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "reason": { "type": "string" }
+      },
+      "required": ["path", "reason"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "read_customer_profile",
+    "description": "Read a private customer profile including account status, email, phone, address, and support history.",
+    "server": "customer-data",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "customer_id": { "type": "string" }
+      },
+      "required": ["customer_id"],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "customer_id": { "type": "string" },
+        "account_status": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" }
+      }
+    }
+  },
+  {
+    "name": "update_customer_profile",
+    "description": "Update private customer profile fields such as email preference, address label, or support note.",
+    "server": "customer-data",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "customer_id": { "type": "string" },
+        "field": { "type": "string" },
+        "value": { "type": "string" }
+      },
+      "required": ["customer_id", "field", "value"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_refund",
+    "description": "Issue a billing refund or credit for a customer order after support confirmation and idempotency review.",
+    "server": "billing",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "customer_id": { "type": "string" },
+        "amount_cents": { "type": "integer", "minimum": 1 },
+        "confirmation_id": { "type": "string" },
+        "idempotency_key": { "type": "string" }
+      },
+      "required": ["order_id", "customer_id", "amount_cents", "confirmation_id", "idempotency_key"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "send_email",
+    "description": "Send an email message to a customer or support teammate through the external email service.",
+    "server": "communications",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "to": { "type": "string", "format": "email" },
+        "subject": { "type": "string" },
+        "body": { "type": "string" }
+      },
+      "required": ["to", "subject", "body"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "post_webhook",
+    "description": "Post a JSON payload to an allowlisted external webhook URL for workflow automation.",
+    "server": "integrations",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "webhook_url": { "type": "string", "format": "uri" },
+        "payload": { "type": "object" }
+      },
+      "required": ["webhook_url", "payload"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "execute_shell",
+    "description": "Execute a shell command in the workspace terminal for emergency diagnostics.",
+    "server": "workspace-filesystem",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "command": { "type": "string" },
+        "working_directory": { "type": "string" }
+      },
+      "required": ["command"],
+      "additionalProperties": false
+    }
+  }
+]

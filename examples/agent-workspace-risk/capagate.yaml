@@ -1,0 +1,25 @@
+project:
+  name: "Agent Workspace Risk"
+  owner: "AI Security Team"
+
+inputs:
+  tools: "./tools.json"
+
+policy:
+  defaults:
+    unknown_tool: block
+    fail_closed: true
+  approval:
+    interactive: false
+  thresholds:
+    fail_on: high
+
+runtime:
+  mode: shadow
+  audit_log: ".capagate/audit.jsonl"
+  redact_responses: true
+
+response_scanning:
+  redact_secrets: true
+  redact_pii: true
+  block_external_exfiltration_markers: true
