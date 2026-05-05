@@ -20,6 +20,7 @@ export * from "./scan/secrets.js";
 export * from "./drift/baseline.js";
 export * from "./drift/diff.js";
 export * from "./attackChain/detector.js";
+export * from "./attackChain/taint.js";
 export * from "./receipt/receipt.js";
 export * from "./report/markdown.js";
 export * from "./report/html.js";

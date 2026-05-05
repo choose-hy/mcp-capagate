@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { parse as parseYaml } from "yaml";
 import type { Command } from "commander";
-import { runStdioProxy, type CapabilityGraph, type PolicyDocument } from "@mcp-capagate/core";
+import { runStdioProxy, RuntimeModeSchema, type CapabilityGraph, type PolicyDocument } from "@mcp-capagate/core";
 
 export function registerWrapCommand(program: Command): void {
   program
@@ -9,17 +9,20 @@ export function registerWrapCommand(program: Command): void {
     .description("Run an upstream stdio MCP server behind the MCP CapaGate transparent proxy.")
     .requiredOption("--policy <path>", "policy YAML")
     .option("--scan <path>", "capability graph JSON for runtime attack-chain context")
-    .option("--audit <path>", "audit JSONL path", ".capagate/audit.jsonl")
+    .option("-c, --config <path>", "capagate.yaml config file")
+    .option("--audit <path>", "audit JSONL path")
     .option("--session <id>", "session id", "default")
+    .option("--mode <mode>", "runtime mode: enforce, shadow, audit-only")
     .option("--interactive", "ask y/N for require_approval decisions", false)
     .allowUnknownOption(true)
     .argument("[upstream...]", "upstream command after --")
-    .action(async (upstream: string[], options: { policy: string; scan?: string; audit: string; session: string; interactive: boolean }) => {
+    .action(async (upstream: string[], options: { policy: string; scan?: string; config?: string; audit?: string; session: string; mode?: string; interactive: boolean }) => {
       if (!upstream.length) {
         throw new Error("Missing upstream command. Example: capagate wrap --policy capagate.policy.yaml -- npx server");
       }
       const policy = parseYaml(await readFile(options.policy, "utf8")) as PolicyDocument;
       const graph = options.scan ? (JSON.parse(await readFile(options.scan, "utf8")) as CapabilityGraph) : undefined;
+      const config = options.config ? await readRuntimeConfig(options.config) : {};
       const command = upstream[0];
       const args = upstream.slice(1);
       if (!command) {
@@ -30,10 +33,20 @@ export function registerWrapCommand(program: Command): void {
         args,
         policy,
         graph,
-        auditLogPath: options.audit,
+        auditLogPath: options.audit ?? config.audit_log ?? ".capagate/audit.jsonl",
         sessionId: options.session,
-        interactive: options.interactive
+        interactive: options.interactive,
+        runtimeMode: parseRuntimeMode(options.mode ?? config.mode ?? "enforce")
       });
       process.exitCode = code;
     });
+}
+
+function parseRuntimeMode(value: string) {
+  return RuntimeModeSchema.parse(value);
+}
+
+async function readRuntimeConfig(path: string): Promise<{ mode?: string; audit_log?: string }> {
+  const config = parseYaml(await readFile(path, "utf8")) as { runtime?: { mode?: string; audit_log?: string } };
+  return config.runtime ?? {};
 }

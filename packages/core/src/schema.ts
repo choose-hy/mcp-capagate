@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import type { CapabilityGraph, MCPToolDefinition, PolicyConstraints, PolicyDocument } from "./types.js";
+import type { CapabilityGraph, MCPToolDefinition, PolicyConstraints, PolicyDocument, RuntimeMode } from "./types.js";
 
 const recordSchema = z.record(z.string(), z.unknown());
 
@@ -45,6 +45,8 @@ export const MCPToolDefinitionSchema = z
   }));
 
 export const MCPToolDefinitionArraySchema = z.array(MCPToolDefinitionSchema);
+
+export const RuntimeModeSchema: z.ZodType<RuntimeMode> = z.enum(["enforce", "shadow", "audit-only"]);
 
 export const CapabilityGraphSchema: z.ZodType<CapabilityGraph> = z.any();
 export const PolicyDocumentSchema: z.ZodType<PolicyDocument> = z.any();

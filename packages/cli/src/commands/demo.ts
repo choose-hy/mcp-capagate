@@ -11,6 +11,7 @@ import {
   handleJsonRpcLine,
   normalizeToolDefinitions,
   readAuditReceipts,
+  TaintTracker,
   type MCPToolDefinition,
   type ScanFinding
 } from "@mcp-capagate/core";
@@ -38,6 +39,7 @@ export function registerDemoCommand(program: Command): void {
       await writeFile("capagate.policy.yaml", stringifyYaml(policy), "utf8");
 
       const attackChainDetector = new AttackChainDetector();
+      const taintTracker = new TaintTracker();
       const simulation = [
         { tool: "read_order", args: { order_id: "ord_demo_1001" }, approve: false },
         { tool: "issue_refund", args: { order_id: "ord_demo_1001", amount: 42.5 }, approve: false },
@@ -57,7 +59,9 @@ export function registerDemoCommand(program: Command): void {
           sessionId: "demo",
           interactive: call.approve,
           approve: () => call.approve,
-          attackChainDetector
+          attackChainDetector,
+          taintTracker,
+          runtimeMode: "enforce"
         });
         decisions.push(`${call.tool}: ${(result.decision?.decision ?? "forward").toUpperCase()} - ${result.decision?.reason ?? result.line}`);
         if (result.decision?.required_controls.includes("attack_chain_block")) {
@@ -70,6 +74,24 @@ export function registerDemoCommand(program: Command): void {
             recommendation: "Block external sends after sensitive reads unless the session is explicitly approved."
           });
         }
+      }
+
+      const shadowTaintTracker = new TaintTracker();
+      for (const call of [
+        { tool: "read_customer_profile", args: { customer_id: "cus_demo_shadow" } },
+        { tool: "send_email", args: { to: "ops@example.test", body: "Synthetic shadow mode message" } }
+      ]) {
+        const line = JSON.stringify({ jsonrpc: "2.0", id: `shadow-${call.tool}`, method: "tools/call", params: { name: call.tool, arguments: call.args } });
+        const result = await handleJsonRpcLine(line, {
+          policy,
+          graph,
+          auditLogPath: ".capagate/audit.jsonl",
+          sessionId: "demo-shadow",
+          attackChainDetector: new AttackChainDetector(),
+          taintTracker: shadowTaintTracker,
+          runtimeMode: "shadow"
+        });
+        decisions.push(`shadow ${call.tool}: ${(result.decision?.decision ?? "forward").toUpperCase()} - ${result.decision?.reason ?? result.line}`);
       }
 
       const audit = readAuditReceipts(".capagate/audit.jsonl");

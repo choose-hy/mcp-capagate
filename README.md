@@ -219,6 +219,8 @@ Reports include:
 - [Limitations](docs/limitations.md): deployment boundaries, safety assumptions, and known MVP limits.
 - [Comparison](docs/comparison.md): how CapaGate differs from scanners, guardrails, observability, and sandboxing.
 - [Policy DSL](docs/policy-dsl.md): argument-level constraints for paths, domains, amounts, flags, and patterns.
+- [Runtime Modes](docs/runtime-modes.md): enforce, shadow, and audit-only behavior for the proxy.
+- [Taint Tracking](docs/taint-tracking.md): session taint labels and external-sink attack-chain detection.
 
 ## Roadmap
 

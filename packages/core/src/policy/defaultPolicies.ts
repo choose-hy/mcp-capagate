@@ -19,5 +19,8 @@ export const DEFAULT_CONTROL_REASONS: Record<string, string> = {
   least_privilege_identity: "The MCP server should run with a least-privilege identity.",
   query_scope_limit: "Database reads should be constrained by tenant and row limits.",
   fail_closed_review: "Unknown tools should be reviewed before they are allowed.",
-  constraint_review: "Tool-call arguments must satisfy policy constraints before execution."
+  constraint_review: "Tool-call arguments must satisfy policy constraints before execution.",
+  taint_chain_block: "Tainted sensitive data must not flow to external sinks.",
+  shadow_mode_review: "Shadow mode forwarded a call that enforcement would have stopped.",
+  audit_only_review: "Audit-only mode recorded a risky call without enforcement."
 };
