@@ -1,4 +1,5 @@
 import type { Capability, DataSensitivity, PolicyDecision, PolicyDocument, PolicyRule, RiskLevel, ToolCallContext } from "../types.js";
+import { evaluateConstraints } from "./constraints.js";
 
 export function evaluatePolicy(policy: PolicyDocument, context: ToolCallContext): PolicyDecision {
   try {
@@ -17,12 +18,29 @@ export function evaluatePolicy(policy: PolicyDocument, context: ToolCallContext)
       };
     }
 
+    const requiredControls = [...new Set(matched.flatMap((item) => item.controls))].sort();
+    const redactResponse = policy.defaults.redact_response || rule.controls.some((control) => control.includes("redaction"));
+    const constraintEvaluation = evaluateConstraints(rule.constraints, context.arguments);
+
+    if (constraintEvaluation.status === "fail") {
+      const firstFinding = constraintEvaluation.findings[0];
+      return {
+        decision: "block",
+        reason: `Policy constraint failed for ${context.tool}: ${firstFinding?.reason ?? "constraint evaluation failed closed"}`,
+        matched_rules: matched.map((item) => item.id),
+        required_controls: [...new Set([...requiredControls, "constraint_review"])].sort(),
+        redact_response: redactResponse,
+        constraint_findings: constraintEvaluation.findings
+      };
+    }
+
     return {
       decision: rule.decision,
       reason: rule.reason,
       matched_rules: matched.map((item) => item.id),
-      required_controls: [...new Set(matched.flatMap((item) => item.controls))].sort(),
-      redact_response: policy.defaults.redact_response || rule.controls.some((control) => control.includes("redaction"))
+      required_controls: requiredControls,
+      redact_response: redactResponse,
+      constraint_findings: constraintEvaluation.findings
     };
   } catch (error) {
     return {

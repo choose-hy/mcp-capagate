@@ -18,5 +18,6 @@ export const DEFAULT_CONTROL_REASONS: Record<string, string> = {
   response_redaction: "Private output should be scanned and redacted.",
   least_privilege_identity: "The MCP server should run with a least-privilege identity.",
   query_scope_limit: "Database reads should be constrained by tenant and row limits.",
-  fail_closed_review: "Unknown tools should be reviewed before they are allowed."
+  fail_closed_review: "Unknown tools should be reviewed before they are allowed.",
+  constraint_review: "Tool-call arguments must satisfy policy constraints before execution."
 };

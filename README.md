@@ -218,6 +218,7 @@ Reports include:
 
 - [Limitations](docs/limitations.md): deployment boundaries, safety assumptions, and known MVP limits.
 - [Comparison](docs/comparison.md): how CapaGate differs from scanners, guardrails, observability, and sandboxing.
+- [Policy DSL](docs/policy-dsl.md): argument-level constraints for paths, domains, amounts, flags, and patterns.
 
 ## Roadmap
 

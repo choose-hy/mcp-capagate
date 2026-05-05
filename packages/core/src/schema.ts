@@ -1,8 +1,27 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import type { CapabilityGraph, MCPToolDefinition, PolicyDocument } from "./types.js";
+import type { CapabilityGraph, MCPToolDefinition, PolicyConstraints, PolicyDocument } from "./types.js";
 
 const recordSchema = z.record(z.string(), z.unknown());
+
+export const BlockedArgumentPatternSchema = z.object({
+  path: z.string().min(1),
+  pattern: z.string().min(1),
+  reason: z.string().min(1)
+});
+
+export const PolicyConstraintsSchema: z.ZodType<PolicyConstraints> = z
+  .object({
+    path_prefixes: z.array(z.string()).optional(),
+    allowed_domains: z.array(z.string()).optional(),
+    blocked_domains: z.array(z.string()).optional(),
+    max_amount: z.number().nonnegative().optional(),
+    required_boolean_flags: z.array(z.string()).optional(),
+    blocked_argument_patterns: z.array(BlockedArgumentPatternSchema).optional(),
+    required_argument_paths: z.array(z.string()).optional(),
+    blocked_argument_paths: z.array(z.string()).optional()
+  })
+  .strict();
 
 export const MCPToolDefinitionSchema = z
   .object({
