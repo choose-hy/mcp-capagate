@@ -2,6 +2,9 @@ import type { CapabilityGraph, CapabilityNode, DriftFinding, DriftReport, Findin
 import { sha256 } from "../schema.js";
 
 const riskRank: Record<RiskLevel, number> = { low: 1, medium: 2, high: 3, critical: 4 };
+const severityRank: Record<FindingSeverity, number> = { info: 0, low: 1, medium: 2, high: 3, critical: 4 };
+
+export type DriftFailThreshold = "medium" | "high" | "critical";
 
 export function diffCapabilityGraphs(baseline: CapabilityGraph, current: CapabilityGraph): DriftReport {
   const findings: DriftFinding[] = [];
@@ -112,6 +115,10 @@ export function diffCapabilityGraphs(baseline: CapabilityGraph, current: Capabil
     findings,
     should_fail: findings.some((finding) => finding.severity === "high" || finding.severity === "critical")
   };
+}
+
+export function driftReportShouldFail(report: DriftReport, failOn: DriftFailThreshold = "high"): boolean {
+  return report.findings.some((finding) => severityRank[finding.severity] >= severityRank[failOn]);
 }
 
 function indexNodes(nodes: CapabilityNode[]): Map<string, CapabilityNode> {

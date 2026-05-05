@@ -17,6 +17,14 @@ inputs:
     description: "Directory for scan and report artifacts"
     required: false
     default: "reports"
+  baseline:
+    description: "Optional path to a saved CapaGate baseline JSON record"
+    required: false
+    default: ""
+  fail-on-drift:
+    description: "Fail threshold for baseline drift: medium, high, or critical"
+    required: false
+    default: "high"
 runs:
   using: "composite"
   steps:
@@ -57,7 +65,38 @@ runs:
           --html "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/index.html" \
           --markdown "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/summary.md" \
           --sarif "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/capagate.sarif"
+    - name: Verify baseline drift
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.baseline }}" ]; then
+          echo "No MCP CapaGate baseline configured." > "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/drift-summary.md"
+          exit 0
+        fi
+
+        set +e
+        node "$GITHUB_ACTION_PATH/packages/cli/dist/index.js" baseline verify \
+          --baseline "$GITHUB_WORKSPACE/${{ inputs.baseline }}" \
+          --current "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/scan.json" \
+          --fail-on "${{ inputs.fail-on-drift }}" \
+          --out "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/drift.json"
+        status=$?
+        set -e
+
+        node -e '
+          const fs = require("fs");
+          const path = process.argv[1];
+          const report = fs.existsSync(path) ? JSON.parse(fs.readFileSync(path, "utf8")) : { findings: [] };
+          const lines = ["## Baseline Drift", ""];
+          lines.push(`Findings: ${report.findings.length}`);
+          for (const finding of report.findings.slice(0, 20)) {
+            lines.push(`- [${finding.severity}] ${finding.message}`);
+          }
+          fs.writeFileSync(process.argv[2], `${lines.join("\n")}\n`);
+        ' "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/drift.json" "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/drift-summary.md"
+        cat "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/drift-summary.md" >> "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/summary.md"
+        exit $status
     - name: Write GitHub step summary
+      if: always()
       shell: bash
       run: |
         cat "$GITHUB_WORKSPACE/${{ inputs.report-dir }}/summary.md" >> "$GITHUB_STEP_SUMMARY"

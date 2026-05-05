@@ -150,8 +150,11 @@ This is deterministic. It does not require an LLM.
 ```bash
 capagate init
 capagate discover --input tools-list-response.json --out normalized-tools.json
+capagate discover --mcp-config claude_desktop_config.json --out reports/discovered-tools.json
 capagate scan --input examples/refund-server/tools.json --out reports/scan.json
 capagate policy --input reports/scan.json --out capagate.policy.yaml
+capagate baseline save --scan reports/scan.json --out .capagate/baseline.json
+capagate baseline verify --baseline .capagate/baseline.json --current reports/scan.json --fail-on high
 capagate diff --baseline .capagate/baseline.json --current reports/scan.json
 capagate report --scan reports/scan.json --policy capagate.policy.yaml --html reports/index.html --markdown reports/summary.md
 capagate wrap --policy capagate.policy.yaml -- npx your-mcp-server
@@ -197,6 +200,7 @@ jobs:
 - `examples/filesystem-server`: read, write, delete, execute shell
 - `examples/email-server`: list inbox, send email, forwarding rule
 - `examples/poisoned-tools`: synthetic prompt-injection metadata, hidden Unicode, schema comments, and suspicious examples
+- `examples/mcp-client-config`: synthetic MCP client config discovery workflow
 
 ## Reports
 
@@ -221,6 +225,8 @@ Reports include:
 - [Policy DSL](docs/policy-dsl.md): argument-level constraints for paths, domains, amounts, flags, and patterns.
 - [Runtime Modes](docs/runtime-modes.md): enforce, shadow, and audit-only behavior for the proxy.
 - [Taint Tracking](docs/taint-tracking.md): session taint labels and external-sink attack-chain detection.
+- [MCP Discovery](docs/mcp-discovery.md): parse MCP client configs and optionally probe `tools/list`.
+- [Baseline CI](docs/baseline-ci.md): save graph baselines and fail pull requests on risky drift.
 
 ## Roadmap
 

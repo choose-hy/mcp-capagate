@@ -105,7 +105,10 @@ Demo 会生成：
 
 ```bash
 capagate scan --input examples/refund-server/tools.json --out reports/scan.json
+capagate discover --mcp-config claude_desktop_config.json --out reports/discovered-tools.json
 capagate policy --input reports/scan.json --out capagate.policy.yaml
+capagate baseline save --scan reports/scan.json --out .capagate/baseline.json
+capagate baseline verify --baseline .capagate/baseline.json --current reports/scan.json --fail-on high
 capagate report --scan reports/scan.json --policy capagate.policy.yaml --html reports/index.html --markdown reports/summary.md
 capagate wrap --policy capagate.policy.yaml -- npx your-mcp-server
 ```
@@ -152,6 +155,8 @@ jobs:
 - [Policy DSL](docs/policy-dsl.md)：用于路径、域名、金额、确认标记和参数模式的工具调用约束。
 - [Runtime Modes](docs/runtime-modes.md)：运行时代理的 enforce、shadow 和 audit-only 模式。
 - [Taint Tracking](docs/taint-tracking.md)：会话 taint 标签和外部 sink 攻击链检测。
+- [MCP Discovery](docs/mcp-discovery.md)：解析 MCP client config，并可选执行 `tools/list` probe。
+- [Baseline CI](docs/baseline-ci.md)：保存能力图谱 baseline，并在 PR 中阻断高风险 drift。
 
 ## 如何在面试或项目介绍里讲
 
