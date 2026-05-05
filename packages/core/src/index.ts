@@ -8,6 +8,8 @@ export * from "./policy/compiler.js";
 export * from "./policy/defaultPolicies.js";
 export * from "./policy/evaluator.js";
 export * from "./policy/constraints.js";
+export * from "./discovery/mcpConfig.js";
+export * from "./discovery/mcpProbe.js";
 export * from "./proxy/jsonRpc.js";
 export * from "./proxy/mcpMessages.js";
 export * from "./proxy/stdioProxy.js";

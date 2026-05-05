@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "node",
+      "args": ["./examples/synthetic-mcp/filesystem-server.js"]
+    },
+    "refunds": {
+      "command": "node",
+      "args": ["./examples/synthetic-mcp/refund-server.js"]
+    },
+    "email": {
+      "command": "node",
+      "args": ["./examples/synthetic-mcp/email-server.js"]
+    }
+  }
+}

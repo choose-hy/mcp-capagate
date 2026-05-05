@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+import { registerBaselineCommand } from "./commands/baseline.js";
 import { registerDemoCommand } from "./commands/demo.js";
 import { registerDiffCommand } from "./commands/diff.js";
 import { registerDiscoverCommand } from "./commands/discover.js";
@@ -17,6 +18,7 @@ program
   .version("0.1.0");
 
 registerInitCommand(program);
+registerBaselineCommand(program);
 registerDiscoverCommand(program);
 registerScanCommand(program);
 registerPolicyCommand(program);

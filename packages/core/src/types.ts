@@ -119,6 +119,33 @@ export interface CapabilityGraph {
   graph_hash: string;
 }
 
+export interface MCPServerConfig {
+  name: string;
+  command: string;
+  args: string[];
+  env?: Record<string, string>;
+  cwd?: string;
+  disabled?: boolean;
+}
+
+export type MCPDiscoveryStatus = "inventory" | "probed" | "error";
+
+export interface MCPDiscoveryServerResult extends MCPServerConfig {
+  status: MCPDiscoveryStatus;
+  tools: MCPToolDefinition[];
+  error?: string;
+  instructions?: string;
+}
+
+export interface MCPDiscoveryReport {
+  generated_at: string;
+  source: string;
+  probe: boolean;
+  servers: MCPDiscoveryServerResult[];
+  tools: MCPToolDefinition[];
+  instructions: string[];
+}
+
 export interface BlockedArgumentPattern {
   path: string;
   pattern: string;

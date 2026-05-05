@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "source": "examples/mcp-client-config/claude_desktop_config.example.json",
+  "probe": false,
+  "servers": [
+    {
+      "name": "filesystem",
+      "command": "node",
+      "args": ["./examples/synthetic-mcp/filesystem-server.js"],
+      "status": "inventory",
+      "tools": [],
+      "instructions": "Run discover with --probe to start this server and request tools/list."
+    },
+    {
+      "name": "refunds",
+      "command": "node",
+      "args": ["./examples/synthetic-mcp/refund-server.js"],
+      "status": "inventory",
+      "tools": [],
+      "instructions": "Run discover with --probe to start this server and request tools/list."
+    },
+    {
+      "name": "email",
+      "command": "node",
+      "args": ["./examples/synthetic-mcp/email-server.js"],
+      "status": "inventory",
+      "tools": [],
+      "instructions": "Run discover with --probe to start this server and request tools/list."
+    }
+  ],
+  "tools": [],
+  "instructions": [
+    "Without --probe, discovery records MCP server inventory only.",
+    "With --probe, CapaGate starts each server and sends initialize plus tools/list over line-delimited JSON-RPC.",
+    "Probe mode is best-effort and may not work for servers that require framed stdio transport, credentials, or interactive setup."
+  ]
+}
